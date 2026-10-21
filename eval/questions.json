@@ -1,0 +1,328 @@
+[
+ {
+  "id": "plus-price",
+  "difficulty": "easy",
+  "question": "How much does the Plus plan cost?",
+  "paraphrases": [
+   "What's the price of Lumen Drive Plus?",
+   "How much is the Plus subscription per month?"
+  ],
+  "facts": [
+   "$8",
+   "$80"
+  ]
+ },
+ {
+  "id": "free-storage",
+  "difficulty": "easy",
+  "question": "How much storage do I get on the Free plan?",
+  "paraphrases": [
+   "How many GB does the free plan include?"
+  ],
+  "facts": [
+   "5 gb|5gb"
+  ]
+ },
+ {
+  "id": "cancel",
+  "difficulty": "easy",
+  "question": "How do I cancel my subscription?",
+  "paraphrases": [
+   "How can I cancel my paid plan?",
+   "Where do I go to cancel my plan?"
+  ],
+  "facts": [
+   "settings",
+   "billing",
+   "end of the|end of your"
+  ]
+ },
+ {
+  "id": "max-file",
+  "difficulty": "easy",
+  "question": "What is the maximum file size I can upload?",
+  "paraphrases": [
+   "What's the largest file I can upload?"
+  ],
+  "facts": [
+   "50 gb|50gb",
+   "2 gb|2gb"
+  ]
+ },
+ {
+  "id": "student",
+  "difficulty": "easy",
+  "question": "Is there a student discount?",
+  "paraphrases": [
+   "Do students get a discount on Lumen Drive?"
+  ],
+  "facts": [
+   "50%",
+   ".edu"
+  ]
+ },
+ {
+  "id": "2fa",
+  "difficulty": "easy",
+  "question": "What two-factor authentication methods are supported?",
+  "paraphrases": [
+   "Which 2FA options can I use?"
+  ],
+  "facts": [
+   "authenticator",
+   "security key|fido2|webauthn",
+   "sms"
+  ]
+ },
+ {
+  "id": "trash",
+  "difficulty": "easy",
+  "question": "How long do deleted files stay in the trash on the Plus plan?",
+  "paraphrases": [
+   "On Plus, how long are files kept in the trash after I delete them?"
+  ],
+  "facts": [
+   "90 days"
+  ]
+ },
+ {
+  "id": "unlink",
+  "difficulty": "easy",
+  "question": "How do I remove a stolen laptop from my account?",
+  "paraphrases": [
+   "My laptop was stolen, how do I unlink it from my account?"
+  ],
+  "facts": [
+   "unlink",
+   "remote wipe"
+  ]
+ },
+ {
+  "id": "conflict",
+  "difficulty": "easy",
+  "question": "What happens when the same file is edited on two devices offline?",
+  "paraphrases": [
+   "How are sync conflicts handled?"
+  ],
+  "facts": [
+   "conflicted copy"
+  ]
+ },
+ {
+  "id": "support-time",
+  "difficulty": "easy",
+  "question": "How fast does support reply to Plus users?",
+  "paraphrases": [
+   "What is the support response time on the Plus plan?"
+  ],
+  "facts": [
+   "24 hours"
+  ]
+ },
+ {
+  "id": "encryption",
+  "difficulty": "easy",
+  "question": "How are my files encrypted?",
+  "paraphrases": [
+   "What encryption does Lumen Drive use?"
+  ],
+  "facts": [
+   "aes-256|aes 256",
+   "tls"
+  ]
+ },
+ {
+  "id": "paypal",
+  "difficulty": "easy",
+  "question": "Can I pay annually with PayPal?",
+  "paraphrases": [
+   "Is PayPal accepted for yearly billing?"
+  ],
+  "facts": [
+   "monthly"
+  ]
+ },
+ {
+  "id": "file-request-free",
+  "difficulty": "easy",
+  "question": "What is the upload limit for file requests on the Free plan?",
+  "paraphrases": [
+   "How much can people upload to my file request on Free?"
+  ],
+  "facts": [
+   "100 mb|100mb"
+  ]
+ },
+ {
+  "id": "indexing",
+  "difficulty": "easy",
+  "question": "Sync is stuck on Indexing, what should I do?",
+  "paraphrases": [
+   "My sync has been stuck on indexing for hours, how do I fix it?"
+  ],
+  "facts": [
+   "restart|quit",
+   "rebuild index"
+  ]
+ },
+ {
+  "id": "sso-password",
+  "difficulty": "easy",
+  "question": "Can I still sign in with a password when SSO is required?",
+  "paraphrases": [
+   "If SSO is set to required, do passwords still work?"
+  ],
+  "facts": [
+   "admin"
+  ]
+ },
+ {
+  "id": "audit-retention",
+  "difficulty": "easy",
+  "question": "How long are audit logs kept?",
+  "paraphrases": [
+   "What is the audit log retention period?"
+  ],
+  "facts": [
+   "1 year|one year|365"
+  ]
+ },
+ {
+  "id": "trash-free",
+  "difficulty": "easy",
+  "near_miss_of": "trash",
+  "question": "How long do deleted files stay in the trash on the Free plan?",
+  "paraphrases": [],
+  "facts": [
+   "7 days"
+  ]
+ },
+ {
+  "id": "business-price",
+  "difficulty": "easy",
+  "near_miss_of": "plus-price",
+  "question": "How much does the Business plan cost?",
+  "paraphrases": [],
+  "facts": [
+   "$15",
+   "3 users"
+  ]
+ },
+ {
+  "id": "support-time-business",
+  "difficulty": "easy",
+  "near_miss_of": "support-time",
+  "question": "How fast does support reply to Business users?",
+  "paraphrases": [],
+  "facts": [
+   "4-hour|4 hour|4 hours",
+   "24/7"
+  ]
+ },
+ {
+  "id": "downgrade-over-limit",
+  "difficulty": "hard",
+  "question": "What happens to my files if I downgrade from Plus to Free while using 300 GB, and what should I do about it?",
+  "paraphrases": [
+   "If I move from Plus to the Free plan with 300 GB stored, what happens to my files and what are my options?"
+  ],
+  "facts": [
+   "read-only|read only",
+   "180 days",
+   "not deleted|aren't deleted|are not deleted|won't be deleted|will not be deleted"
+  ]
+ },
+ {
+  "id": "plus-vs-business-team",
+  "difficulty": "hard",
+  "question": "We are a team of 4 people. Compare buying Plus for each person versus the Business plan in total monthly cost and features. Which should we choose?",
+  "paraphrases": [
+   "For a 4 person team, should we get 4 Plus plans or Business? Compare cost and features."
+  ],
+  "facts": [
+   "$32|32",
+   "$60|60",
+   "sso",
+   "admin console"
+  ]
+ },
+ {
+  "id": "ransomware",
+  "difficulty": "hard",
+  "question": "Explain how I would recover my account after a ransomware attack on the Plus plan, and what limits apply.",
+  "paraphrases": [
+   "Why would Plus help me recover from ransomware, and how would the recovery work?"
+  ],
+  "facts": [
+   "rewind",
+   "90 days",
+   "alert|email"
+  ]
+ },
+ {
+  "id": "vault-pin",
+  "difficulty": "hard",
+  "question": "Why can't support recover my Vault files if I forget the PIN, and what are the trade-offs of using the Vault?",
+  "paraphrases": [
+   "What's the trade-off of the end-to-end encrypted Vault, and why can't support unlock it if I lose my PIN?"
+  ],
+  "facts": [
+   "end-to-end",
+   "recovery key",
+   "cannot be recovered|can't be recovered|cannot recover|can't recover|not be recovered|unrecoverable"
+  ]
+ },
+ {
+  "id": "annual-refund-scenario",
+  "difficulty": "hard",
+  "question": "I bought an annual Plus plan 20 days ago and a monthly plan for my partner 10 days ago. If we cancel both today, what refunds would we get and when does access end?",
+  "paraphrases": [
+   "Annual Plus bought 20 days ago and a monthly plan bought 10 days ago: what happens to refunds and access if we cancel both now?"
+  ],
+  "facts": [
+   "full refund|refunded in full|full",
+   "30 days",
+   "end of the"
+  ]
+ },
+ {
+  "id": "eu-residency",
+  "difficulty": "hard",
+  "question": "Our company needs data stored in the EU for GDPR. What plan do we need, what should we set up first, and what happens if we already created the team in the US?",
+  "paraphrases": [
+   "We need EU data residency for GDPR compliance: which plan, what setup steps, and what if our team already exists in the US region?"
+  ],
+  "facts": [
+   "business",
+   "frankfurt",
+   "14 days",
+   "support"
+  ]
+ },
+ {
+  "id": "storage-pool",
+  "difficulty": "hard",
+  "question": "On Business with 10 users, could one designer use 12 TB? Explain how the storage limit works.",
+  "paraphrases": [
+   "Business plan with 10 users: is it possible for one person to use 12 TB? How does storage pooling work?"
+  ],
+  "facts": [
+   "50 tb|50tb",
+   "pool"
+  ]
+ },
+ {
+  "id": "offboarding",
+  "difficulty": "hard",
+  "question": "An employee is leaving our Business team. What are our options for their files, what happens after 30 days, and what should we do to keep shared links safe?",
+  "paraphrases": [
+   "When an employee leaves our Business account, what options do we have for their files and what happens after 30 days?"
+  ],
+  "facts": [
+   "transfer",
+   "suspended",
+   "30 days",
+   "deleted"
+  ]
+ }
+]
