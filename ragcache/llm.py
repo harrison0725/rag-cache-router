@@ -31,13 +31,13 @@ class ClaudeLLM:
 
         self.client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
 
-    def generate(self, model, question, chunks) -> LLMResult:
+    def generate(self, model, question, chunks, tier="large") -> LLMResult:
         start = time.perf_counter()
         response = self.client.messages.create(
             model=model,
             max_tokens=config.MAX_OUTPUT_TOKENS,
             system=SYSTEM_PROMPT,
-            output_config={"effort": config.EFFORT.get(model, "medium")},
+            output_config={"effort": config.EFFORT[tier]},
             messages=[{"role": "user", "content": build_prompt(question, chunks)}],
         )
         latency_ms = (time.perf_counter() - start) * 1000
@@ -66,8 +66,8 @@ class MockLLM:
     def __init__(self, speedup=20.0):
         self.speedup = speedup
 
-    def generate(self, model, question, chunks) -> LLMResult:
-        is_large = model == config.LARGE_MODEL
+    def generate(self, model, question, chunks, tier="large") -> LLMResult:
+        is_large = tier == "large"
         time.sleep((2.5 if is_large else 0.7) / self.speedup)
         prompt = build_prompt(question, chunks)
         in_tok = len(prompt) // 4 + 100

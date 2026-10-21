@@ -24,10 +24,10 @@ PRICES = {
     "claude-opus-5-5": (4.00, 20.00),
 }
 
-# How hard each model "thinks". Lower effort = fewer tokens = cheaper/faster.
+# How hard each tier "thinks". Lower effort = fewer tokens = cheaper/faster.
 EFFORT = {
-    SMALL_MODEL: os.getenv("SMALL_EFFORT", "low"),
-    LARGE_MODEL: os.getenv("LARGE_EFFORT", "medium"),
+    "small": os.getenv("SMALL_EFFORT", "low"),
+    "large": os.getenv("LARGE_EFFORT", "medium"),
 }
 MAX_OUTPUT_TOKENS = 4000
 

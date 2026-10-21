@@ -28,9 +28,10 @@ class Answer:
 
 
 class RAGService:
-    def __init__(self, use_cache=True, use_routing=True, mock=False, metrics=None):
+    def __init__(self, use_cache=True, use_routing=True, mock=False, metrics=None, large_model=None):
         self.use_cache = use_cache
         self.use_routing = use_routing
+        self.large_model = large_model or config.LARGE_MODEL
         self.embedder = get_embedder()
         self.retriever = Retriever(self.embedder)
         self.cache = SemanticCache()
@@ -57,13 +58,14 @@ class RAGService:
         # 3) Route: small model for easy questions, large model for hard ones.
         if self.use_routing:
             decision = route(question)
-            model, tier, reason = decision.model, decision.tier, "; ".join(decision.reasons)
+            tier, reason = decision.tier, "; ".join(decision.reasons)
+            model = self.large_model if tier == "large" else decision.model
         else:
-            model, tier, reason = config.LARGE_MODEL, "large", "routing off (baseline)"
+            model, tier, reason = self.large_model, "large", "routing off (baseline)"
 
         # 4) Generate the answer.
         pre_llm_ms = (time.perf_counter() - start) * 1000
-        result = self.llm.generate(model, question, chunks)
+        result = self.llm.generate(model, question, chunks, tier)
         if self.use_cache:
             self.cache.add(question, qvec, result.text, model)
 

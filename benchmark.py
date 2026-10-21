@@ -3,6 +3,8 @@ vs optimized (semantic cache + model routing), on the same realistic workload.
 
     python benchmark.py            # real run with Claude (costs roughly $1-3)
     python benchmark.py --mock     # free dry run with a fake LLM, numbers NOT real
+    python benchmark.py --reuse-baseline --large-model claude-sonnet-5-5 --name sonnet
+                                   # experiment: Sonnet instead of Opus for hard questions
 
 Writes results/benchmark.md (quote-ready table), results/benchmark.json and
 results/requests.csv. Both runs also show up in the dashboard.
@@ -46,9 +48,10 @@ def fact_recall(answer, facts):
     return hits / len(facts)
 
 
-def run_mode(name, workload, by_id, query_to_id, use_cache, use_routing, mock, store):
+def run_mode(name, workload, by_id, query_to_id, use_cache, use_routing, mock, store, large_model=None):
     store.clear_run(name)
-    svc = RAGService(use_cache=use_cache, use_routing=use_routing, mock=mock, metrics=store)
+    svc = RAGService(use_cache=use_cache, use_routing=use_routing, mock=mock, metrics=store,
+                     large_model=large_model)
     records = []
     for i, (qid, text) in enumerate(workload, 1):
         a = svc.ask(text, run=name)
@@ -68,7 +71,19 @@ def run_mode(name, workload, by_id, query_to_id, use_cache, use_routing, mock, s
     return records
 
 
-def report(base, opt, mock):
+def load_baseline(path):
+    """Re-use the baseline rows saved by an earlier run (saves ~$0.70 per run)."""
+    with open(path, encoding="utf-8") as f:
+        rows = [r for r in csv.DictReader(f) if r["run"] == "baseline"]
+    for r in rows:
+        for k in ("cost_usd", "latency_ms", "quality", "similarity"):
+            r[k] = float(r[k])
+        r["cache_hit"] = r["cache_hit"] == "True"
+        r["wrong_cache_hit"] = r["wrong_cache_hit"] == "True"
+    return rows
+
+
+def report(base, opt, mock, opt_large_model=config.LARGE_MODEL):
     def stats(recs):
         s = summarise(recs)
         s["avg_quality"] = round(sum(r["quality"] for r in recs) / len(recs), 3)
@@ -103,7 +118,8 @@ def report(base, opt, mock):
     lines += [
         f"# Benchmark: baseline vs. semantic cache + routing",
         "",
-        f"Run at {time.strftime('%Y-%m-%d %H:%M')} · small model `{config.SMALL_MODEL}` · large model `{config.LARGE_MODEL}` · "
+        f"Run at {time.strftime('%Y-%m-%d %H:%M')} · baseline model `{config.LARGE_MODEL}` · "
+        f"optimized: small `{config.SMALL_MODEL}`, large `{opt_large_model}` · "
         f"cache threshold {config.CACHE_THRESHOLD} · embedder: local (free)",
         "",
         "| Metric | Baseline (large model, no cache) | Optimized (cache + routing) |",
@@ -138,6 +154,13 @@ def main():
     ap.add_argument("--mock", action="store_true", help="fake LLM, no API key, simulated numbers")
     ap.add_argument("--limit", type=int, help="only run the first N workload items (quick test)")
     ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--large-model", default=config.LARGE_MODEL,
+                    help="large model for the OPTIMIZED run only (baseline always uses LARGE_MODEL), "
+                         "e.g. claude-sonnet-5-5")
+    ap.add_argument("--reuse-baseline", action="store_true",
+                    help="skip the baseline run and reuse the one saved in results/requests.csv")
+    ap.add_argument("--name", default="optimized",
+                    help="label for the optimized run; also names the output files")
     args = ap.parse_args()
 
     questions = json.loads((ROOT / "eval" / "questions.json").read_text())
@@ -147,22 +170,27 @@ def main():
     print(f"Workload: {len(workload)} requests from {len(questions)} distinct questions\n")
 
     store = MetricsStore()
-    print("Baseline: every request -> large model, no cache")
-    base = run_mode("baseline", workload, by_id, query_to_id, False, False, args.mock, store)
-    print("\nOptimized: semantic cache + model routing")
-    opt = run_mode("optimized", workload, by_id, query_to_id, True, True, args.mock, store)
+    if args.reuse_baseline:
+        base = load_baseline(RESULTS / "requests.csv")
+        print(f"Re-using {len(base)} saved baseline requests from results/requests.csv")
+    else:
+        print("Baseline: every request -> large model, no cache")
+        base = run_mode("baseline", workload, by_id, query_to_id, False, False, args.mock, store)
+    print(f"\nOptimized ({args.name}): semantic cache + model routing, large model {args.large_model}")
+    opt = run_mode(args.name, workload, by_id, query_to_id, True, True, args.mock, store, args.large_model)
 
-    md, summary = report(base, opt, args.mock)
+    md, summary = report(base, opt, args.mock, args.large_model)
     RESULTS.mkdir(exist_ok=True)
     # Always write UTF-8: Windows' default encoding can't store characters like "→".
-    with open(RESULTS / "requests.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=list(base[0]))
+    suffix = "" if args.name == "optimized" else f"-{args.name}"
+    with open(RESULTS / f"requests{suffix}.csv", "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(opt[0]))
         w.writeheader()
         w.writerows(base + opt)
-    (RESULTS / "benchmark.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    (RESULTS / "benchmark.md").write_text(md + "\n", encoding="utf-8")
+    (RESULTS / f"benchmark{suffix}.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (RESULTS / f"benchmark{suffix}.md").write_text(md + "\n", encoding="utf-8")
     print("\n" + md)
-    print(f"\nSaved results/benchmark.md, results/benchmark.json, results/requests.csv")
+    print(f"\nSaved results/benchmark{suffix}.md, .json and results/requests{suffix}.csv")
 
 
 if __name__ == "__main__":

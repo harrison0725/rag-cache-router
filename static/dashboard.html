@@ -11,7 +11,7 @@
     --surface-0: #f4f4f2; --surface-1: #fcfcfb; --border: #e2e1dc;
     --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #77766f;
     --grid: #ebeae6;
-    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
     --good: #0f7b3d; --bad: #c0362c;
   }
   @media (prefers-color-scheme: dark) {
@@ -20,7 +20,7 @@
       --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
       --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
       --grid: #2a2a28;
-      --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
       --good: #4cc27c; --bad: #ef7a70;
     }
   }
@@ -29,7 +29,7 @@
     --surface-0: #111110; --surface-1: #1a1a19; --border: #2e2e2c;
     --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #9a998f;
     --grid: #2a2a28;
-    --s1: #3987e5; --s2: #d95926; --s3: #199e70;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
     --good: #4cc27c; --bad: #ef7a70;
   }
   * { box-sizing: border-box; }
@@ -111,7 +111,7 @@ const TIERS = { cache: { label: "Cache hit", color: "--s3" },
                 small: { label: "Small model", color: "--s1" },
                 large: { label: "Large model", color: "--s2" } };
 const RUN_ORDER = ["baseline", "optimized", "live"];          // fixed color per run
-const runColor = (run) => ["--s1", "--s2", "--s3"][Math.max(0, RUN_ORDER.indexOf(run)) % 3];
+const runColor = (run) => ({ baseline: "--s1", optimized: "--s2", live: "--s3" })[run] || "--s4";
 const $ = (id) => document.getElementById(id);
 const money = (x, d = 4) => "$" + Number(x).toFixed(d);
 const ms = (x) => x >= 1000 ? (x / 1000).toFixed(2) + " s" : Math.round(x) + " ms";
