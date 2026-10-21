@@ -11,6 +11,7 @@ import argparse
 import csv
 import json
 import random
+import sys
 import time
 from pathlib import Path
 
@@ -132,6 +133,7 @@ def report(base, opt, mock):
 
 
 def main():
+    sys.stdout.reconfigure(errors="replace")  # don't crash on old Windows consoles
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--mock", action="store_true", help="fake LLM, no API key, simulated numbers")
     ap.add_argument("--limit", type=int, help="only run the first N workload items (quick test)")
@@ -152,12 +154,13 @@ def main():
 
     md, summary = report(base, opt, args.mock)
     RESULTS.mkdir(exist_ok=True)
-    (RESULTS / "benchmark.md").write_text(md + "\n")
-    (RESULTS / "benchmark.json").write_text(json.dumps(summary, indent=2))
-    with open(RESULTS / "requests.csv", "w", newline="") as f:
+    # Always write UTF-8: Windows' default encoding can't store characters like "→".
+    with open(RESULTS / "requests.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(base[0]))
         w.writeheader()
         w.writerows(base + opt)
+    (RESULTS / "benchmark.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (RESULTS / "benchmark.md").write_text(md + "\n", encoding="utf-8")
     print("\n" + md)
     print(f"\nSaved results/benchmark.md, results/benchmark.json, results/requests.csv")
 
