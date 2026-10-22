@@ -58,6 +58,13 @@ those questions gave the same fact recall on them (88.9% for both) at about a
 third of the cost and half the tail latency. The caveat: 12 hard questions is a
 small sample, and fact recall checks facts rather than reasoning quality.
 
+![Dashboard showing the Haiku / Opus optimized run](results/dashboard.png)
+
+*The dashboard for the Haiku / Opus run. Left: each dot is one question. Cache
+hits (green) come back in under 300 ms, Haiku (blue) in about 1 s, and Opus
+(orange) in 3–10 s. Right: running cost. The top line is the all-Opus baseline,
+the orange line is cache + Haiku/Opus, and the bottom line is cache + Haiku/Sonnet.*
+
 ## Setup (about 5 minutes)
 
 You need Python 3.10 or newer and an Anthropic API key
