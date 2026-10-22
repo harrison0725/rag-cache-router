@@ -33,6 +33,31 @@ request, and a **benchmark script** produces the before/after numbers.
                                answer + log (tokens, $, latency) ──▶ dashboard
 ```
 
+## Results
+
+Measured on 71 support questions (27 distinct questions, plus rewordings and
+repeats), with the same questions sent through each setup. The baseline sends
+every question to the most capable model (Opus 5.5) with no cache.
+
+| Metric | Baseline (all Opus, no cache) | Cache + routing (Haiku / Opus) | Cache + routing (Haiku / Sonnet) |
+|---|---|---|---|
+| Cost per 1,000 questions | $9.97 | $2.51 (**-75%**) | $0.98 (**-90%**) |
+| Median latency (p50) | 3.1 s | 1.0 s (**-69%**) | 0.9 s (**-71%**) |
+| p95 latency | 7.0 s | 6.8 s (-3%) | 3.7 s (**-47%**) |
+| Cache hit rate | 0% | 41% | 41% |
+| Wrong cache hits | – | 0 | 0 |
+| Answer quality (fact recall) | 92.0% | 91.6% | 91.6% |
+
+Full reports: [Haiku / Opus](results/opus-run/benchmark.md) ·
+[Haiku / Sonnet](results/benchmark-sonnet.md).
+
+**What I learned.** The cache answered 41% of questions instantly for $0, and
+Haiku handled most of the rest. With Opus as the large model, p95 barely moved,
+because the 12 hardest questions still waited on Opus. Swapping in Sonnet for
+those questions gave the same fact recall on them (88.9% for both) at about a
+third of the cost and half the tail latency. The caveat: 12 hard questions is a
+small sample, and fact recall checks facts rather than reasoning quality.
+
 ## Setup (about 5 minutes)
 
 You need Python 3.10 or newer and an Anthropic API key
@@ -56,8 +81,8 @@ First a free dry run with a fake LLM, to check everything works:
 python benchmark.py --mock
 ```
 
-Then the real run. It sends about 70 questions through both setups and costs
-roughly **$2 to $4** in API usage:
+Then the real run. It sends about 70 questions through both setups and cost
+about **$0.90** in API usage when last measured:
 
 ```bash
 python benchmark.py
@@ -83,6 +108,15 @@ plus a suggested resume line filled in with your real numbers. If quality
 drops by more than 2 points, it tells you that instead of writing the line.
 
 Per-request details (route, cache similarity, answer) go to `results/requests.csv`.
+
+**Experiments.** To try a different large model for the optimized side without
+paying for the baseline again:
+
+```bash
+python benchmark.py --reuse-baseline --large-model claude-sonnet-5-5 --name sonnet
+```
+
+This writes `results/benchmark-sonnet.md` and shows up as its own run in the dashboard.
 
 ## 2. Open the dashboard
 
